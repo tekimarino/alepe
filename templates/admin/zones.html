@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% set title = "Zones" %}
+{% block content %}
+  <h1>Zones</h1>
+
+  <div class="card">
+    <h2>Ajouter une zone</h2>
+    <form method="post" class="form inline">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="action" value="add">
+      <input name="name" placeholder="Nom de la zone (ex. Koko, Plateau...)" required>
+      <button class="btn primary" type="submit">Ajouter</button>
+    </form>
+    <p class="muted">Tu peux compléter la liste ici au fur et à mesure.</p>
+  </div>
+
+  <div class="card">
+    <h2>Liste des zones</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Zone</th>
+          <th>Statut</th>
+          <th style="width: 160px;">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for z in zones %}
+          <tr>
+            <td><strong>{{ z.name }}</strong></td>
+            <td>
+              {% if z.active %}
+                <span class="badge ok">Active</span>
+              {% else %}
+                <span class="badge warn">Inactive</span>
+              {% endif %}
+            </td>
+            <td>
+              <form method="post" class="inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="action" value="toggle">
+                <input type="hidden" name="zone_id" value="{{ z.id }}">
+                <button class="btn" type="submit">
+                  {% if z.active %}Désactiver{% else %}Activer{% endif %}
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

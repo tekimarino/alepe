@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% set title = "Superviseur" %}
+{% block content %}
+  <h1>Tableau de bord — Superviseur</h1>
+  <p class="muted">Zone : <strong>{{ zone_name }}</strong></p>
+
+  <div class="grid">
+    <div class="kpi"><div class="kpi-label">Total</div><div class="kpi-value">{{ counts.total }}</div></div>
+    <div class="kpi"><div class="kpi-label">En attente</div><div class="kpi-value">{{ counts.pending }}</div></div>
+    <div class="kpi"><div class="kpi-label">À corriger</div><div class="kpi-value">{{ counts.needs }}</div></div>
+    <div class="kpi"><div class="kpi-label">Vérifiés</div><div class="kpi-value">{{ counts.verified }}</div></div>
+    <div class="kpi"><div class="kpi-label">Approuvés</div><div class="kpi-value">{{ counts.approved }}</div></div>
+    <div class="kpi"><div class="kpi-label">Rejetés</div><div class="kpi-value">{{ counts.rejected }}</div></div>
+  </div>
+
+  <div class="card">
+    <div class="row-between">
+      <h2>Dossiers en attente ({{ counts.pending }})</h2>
+      <span class="muted small">Tri : du plus récent au plus ancien</span>
+    </div>
+
+    {% if pending %}
+      <div class="table-wrap">
+        <table class="table table-modern">
+          <thead>
+            <tr>
+              <th>Électeur</th>
+              <th>Né(e)</th>
+              <th>Quartier</th>
+              <th>Téléphone</th>
+              <th>Agent</th>
+              <th>Créé le</th>
+              <th style="width:130px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for r in pending %}
+            <tr>
+              <td><span class="lastname">{{ (r.nom or '')|upper }}</span> <span class="firstname">{{ r.prenoms }}</span></td>
+              <td>{{ r.dob }}</td>
+              <td>{{ r.quartier }}</td>
+              <td>{{ r.telephone if r.telephone else '—' }}</td>
+              <td class="muted">{{ (find_user(r.created_by).full_name if find_user(r.created_by) else '—') }}</td>
+              <td class="mono">{{ (r.created_at[:19].replace('T',' ') if r.created_at else '—') }}</td>
+              <td><a class="btn primary" href="{{ url_for('supervisor_review', reg_id=r.id) }}">Vérifier</a></td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="hint">Conseil : si un dossier est incomplet ou douteux, utilise <strong>À corriger</strong> (avec motif) plutôt que Rejet.</div>
+    {% else %}
+      <div class="hint">Rien à valider pour l’instant. Tes agents bossent… ou ils dorment.</div>
+    {% endif %}
+  </div>
+{% endblock %}

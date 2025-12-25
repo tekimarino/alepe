@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-1">Modifier PV — {{ code }}</h2>
+<div class="text-muted small mb-3">Toute modification remet automatiquement le PV en <strong>attente de validation superviseur</strong>.</div>
+
+<div class="row g-3">
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="fw-semibold">{{ station.name if station else "Bureau" }}</div>
+        <div class="text-muted small">Centre: {{ station.centre_name if station else "—" }}</div>
+        <hr/>
+        <div class="small">
+          <div><span class="text-muted">Inscrits:</span> {{ station.registered if station else "—" }}</div>
+          <div><span class="text-muted">Soumis par:</span> {{ pv.submitted_by or "—" }}</div>
+          <div><span class="text-muted">Soumis le (UTC):</span> {{ pv.submitted_at_utc or "—" }}</div>
+          <div><span class="text-muted">Statut actuel:</span> {{ pv.status or "—" }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <form method="post">
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-sm align-middle">
+              <thead>
+                <tr>
+                  <th>Candidat·e</th>
+                  <th>Parti</th>
+                  <th class="text-end">Voix</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for c in cand %}
+                <tr>
+                  <td>{{ c.name }}</td>
+                  <td class="text-muted">{{ c.party }}</td>
+                  <td class="text-end">
+                    <input class="form-control form-control-sm text-end vote-input" type="number" min="0" step="1" name="vote_{{ c.id }}" value="{{ pv.votes.get(c.id,0) }}">
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="small text-muted">
+              Total saisi: <span id="totalVotes" class="fw-semibold">0</span>
+              {% if station and station.registered %}
+                — Inscrits: <span class="fw-semibold">{{ station.registered }}</span>
+              {% endif %}
+            </div>
+            <div>
+              <a class="btn btn-outline-secondary" href="{{ url_for('admin_results') }}">Annuler</a>
+              <button class="btn btn-primary" type="submit">Enregistrer</button>
+            </div>
+          </div>
+
+          <div id="warnBox" class="alert alert-warning mt-3 d-none">
+            Attention: le total des voix dépasse le nombre d’inscrits.
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function recomputeTotal() {
+    let total = 0;
+    document.querySelectorAll('.vote-input').forEach(el => {
+      const v = parseInt(el.value || '0', 10);
+      if (!isNaN(v)) total += v;
+    });
+    document.getElementById('totalVotes').textContent = total;
+
+    const registered = {{ (station.registered if station and station.registered else 0) | int }};
+    const warn = document.getElementById('warnBox');
+    if (registered > 0 && total > registered) warn.classList.remove('d-none');
+    else warn.classList.add('d-none');
+  }
+  document.querySelectorAll('.vote-input').forEach(el => el.addEventListener('input', recomputeTotal));
+  recomputeTotal();
+</script>
+{% endblock %}

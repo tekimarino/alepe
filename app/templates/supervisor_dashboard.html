@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex align-items-start justify-content-between mb-3">
+  <div>
+    <h2 class="mb-1">Superviseur — {{ center.code }} ({{ center.name }})</h2>
+    <div class="text-muted small">PV classés par bureaux de vote. Seuls les PV validés sont comptabilisés publiquement.</div>
+  </div>
+</div>
+
+<div class="row g-2 mb-3">
+  <div class="col-md-4">
+    <div class="card"><div class="card-body">
+      <div class="text-muted small">Bureaux</div>
+      <div class="fs-4 fw-semibold">{{ stats.bureaux_total }}</div>
+    </div></div>
+  </div>
+  <div class="col-md-4">
+    <div class="card"><div class="card-body">
+      <div class="text-muted small">En attente</div>
+      <div class="fs-4 fw-semibold">{{ stats.pv_soumis }}</div>
+    </div></div>
+  </div>
+  <div class="col-md-4">
+    <div class="card"><div class="card-body">
+      <div class="text-muted small">Validés / Rejetés</div>
+      <div class="fs-4 fw-semibold">{{ stats.pv_valides }} / {{ stats.pv_rejetes }}</div>
+    </div></div>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-sm table-hover align-middle">
+    <thead>
+      <tr>
+        <th>Bureau</th>
+        <th>Nom</th>
+        <th class="text-end">Total</th>
+        <th>Statut</th>
+        <th>Soumis par</th>
+        <th>Soumis le (UTC)</th>
+        <th class="text-end">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for it in items %}
+      <tr>
+        <td class="fw-semibold">{{ it.code }}</td>
+        <td class="text-muted">{{ it.station.name }}</td>
+        <td class="text-end">{{ it.total_votes }}</td>
+        <td>
+          {% if it.status == "SUPERVISOR_VALIDATED" %}
+            <span class="badge text-bg-success">VALIDÉ</span>
+          {% elif it.status == "SUPERVISOR_REJECTED" %}
+            <span class="badge text-bg-danger">REJETÉ</span>
+          {% elif it.status == "SUBMITTED" %}
+            <span class="badge text-bg-warning">EN ATTENTE</span>
+          {% elif it.has_pv %}
+            <span class="badge text-bg-secondary">{{ it.status }}</span>
+          {% else %}
+            <span class="badge text-bg-light text-dark">Aucun PV</span>
+          {% endif %}
+        </td>
+        <td class="text-muted">{{ it.submitted_by or "—" }}</td>
+        <td class="text-muted small">{{ it.submitted_at_utc or "—" }}</td>
+        <td class="text-end">
+          {% if it.has_pv %}
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('supervisor_pv', code=it.code) }}">Ouvrir PV</a>
+          {% else %}
+            <button class="btn btn-sm btn-outline-secondary" disabled>Aucun PV</button>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

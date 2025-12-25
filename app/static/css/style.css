@@ -1,0 +1,96 @@
+.avatar{
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(0,0,0,.1);
+}
+.avatar.placeholder{
+  background: linear-gradient(135deg, rgba(0,0,0,.08), rgba(0,0,0,.02));
+}
+
+/* Navbar brand logo: make it readable while keeping the navbar clean */
+.brand-logo{
+  height: 70px;
+  width: auto;
+  max-width: 220px;
+}
+
+@media (max-width: 576px){
+  .brand-logo{
+    height: 56px;
+    max-width: 180px;
+  }
+}
+
+/* Slightly reduce navbar vertical padding to compensate for larger logo */
+.navbar{
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+}
+
+
+/* --- Simulation (admin) --- */
+.sim-hero{
+  border: 1px solid rgba(0,0,0,.08);
+  background: linear-gradient(180deg, rgba(13,110,253,.06), rgba(25,135,84,.03));
+}
+.sim-winner{
+  display: flex;
+  gap: 16px;
+  align-items: stretch;
+}
+.sim-photo-wrap{
+  width: 130px;
+  min-width: 130px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,.12);
+  background: rgba(255,255,255,.8);
+}
+.sim-photo{
+  width: 130px;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+.sim-title{
+  font-size: .8rem;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,.55);
+}
+.sim-name{
+  font-size: 1.65rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+.sim-votes{
+  font-size: 1.9rem;
+  font-weight: 900;
+  line-height: 1.0;
+}
+.sim-kpi{
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: rgba(255,255,255,.65);
+}
+.sim-kpi-label{
+  font-size: .78rem;
+  color: rgba(0,0,0,.55);
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+.sim-kpi-value{
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+.sim-badge{
+  font-size: .85rem;
+}
+@media (max-width: 576px){
+  .sim-winner{flex-direction: column;}
+  .sim-photo-wrap{width: 100%; min-width: 100%;}
+  .sim-photo{width: 100%; height: 200px;}
+}

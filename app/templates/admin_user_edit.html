@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0">Modifier un utilisateur</h3>
+  <a class="btn btn-outline-secondary" href="{{ url_for('admin_users') }}">Retour</a>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <form method="post">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Username</label>
+          <input class="form-control" value="{{ user.username }}" readonly>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Rôle</label>
+          <select class="form-select" name="role">
+            <option value="rep" {% if user.role == 'rep' %}selected{% endif %}>Représentant</option>
+            <option value="supervisor" {% if user.role == 'supervisor' %}selected{% endif %}>Superviseur (centre)</option>
+            <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Actif</label>
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="checkbox" name="is_active" id="is_active" {% if user.is_active %}checked{% endif %}>
+            <label class="form-check-label" for="is_active">Compte actif</label>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Nom complet</label>
+          <input class="form-control" name="full_name" value="{{ user.full_name }}">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Contacts</label>
+          <input class="form-control" name="contacts" value="{{ user.contacts }}">
+        </div>
+
+        <div class="col-md-8">
+          <label class="form-label">Bureau affecté</label>
+          <select class="form-select" name="polling_station_code">
+            <option value="">—</option>
+            {% for s in stations %}
+              <option value="{{ s.code }}" {% if s.code == user.polling_station_code %}selected{% endif %}>{{ s.code }} — {{ s.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Centre (si superviseur)</label>
+          <select class="form-select" name="center_code">
+            <option value="">—</option>
+            {% for c in centers %}
+              <option value="{{ c.code }}" {% if c.code == user.center_code %}selected{% endif %}>{{ c.code }} — {{ c.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Nouveau mot de passe</label>
+          <input class="form-control" name="password" type="password" placeholder="(laisser vide si inchangé)">
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <button class="btn btn-dark">Enregistrer</button>
+        <a class="btn btn-outline-secondary" href="{{ url_for('admin_users') }}">Annuler</a>
+      </div>
+    </form>
+
+    {% if user.role == 'rep' and user.polling_station_code %}
+      <form class="mt-3" method="post" action="{{ url_for('admin_user_unassign', username=user.username, next=url_for('admin_user_edit', username=user.username)) }}" onsubmit="return confirm('Désaffecter ce représentant de son bureau ?');">
+        <button class="btn btn-outline-warning">Désaffecter le représentant</button>
+      </form>
+    {% elif user.role == 'supervisor' and user.center_code %}
+      <form class="mt-3" method="post" action="{{ url_for('admin_user_unassign', username=user.username, next=url_for('admin_user_edit', username=user.username)) }}" onsubmit="return confirm('Désaffecter ce superviseur de son centre ?');">
+        <button class="btn btn-outline-warning">Désaffecter le superviseur</button>
+      </form>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

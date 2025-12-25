@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0">Modifier un bureau de vote</h3>
+  <a class="btn btn-outline-secondary" href="{{ url_for('admin_polling_stations') }}">Retour</a>
+</div>
+
+<div class="alert alert-info">
+  Le code du bureau est recalculé automatiquement: <code>BONOUA-<em>centre_code</em>-<em>bureau_code</em></code>. Si le code change, les affectations et PV sont mis à jour.
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <form method="post">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Code actuel</label>
+          <input class="form-control" value="{{ station.code }}" readonly>
+        </div>
+        <div class="col-md-8"></div>
+
+        <div class="col-md-6">
+          <label class="form-label">Centre</label>
+          <select class="form-select" name="centre_code" required>
+            {% for c in centers %}
+              <option value="{{ c.code }}" {% if c.code == station.centre_code %}selected{% endif %}>{{ c.code }} – {{ c.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Bureau (code)</label>
+          <input class="form-control" name="bureau_code" value="{{ station.bureau_code }}" required>
+          <div class="form-text">Ex: BV01, BV02…</div>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Inscrits</label>
+          <input class="form-control" name="registered" value="{{ station.registered or 0 }}" inputmode="numeric">
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <button class="btn btn-dark">Enregistrer</button>
+        <a class="btn btn-outline-secondary" href="{{ url_for('admin_polling_stations') }}">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

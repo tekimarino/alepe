@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-3">
+  <div>
+    <h2 class="mb-1">PV — {{ station.code }} ({{ station.name }})</h2>
+    <div class="text-muted small">Centre: {{ station.centre_code }} — {{ station.centre_name }}</div>
+  </div>
+  <div>
+    <a class="btn btn-outline-secondary" href="{{ url_for('supervisor_dashboard') }}">Retour</a>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Candidat·e</th>
+                <th>Parti</th>
+                <th class="text-end">Voix</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for v in votes %}
+              <tr>
+                <td>{{ v.name }}</td>
+                <td class="text-muted">{{ v.party }}</td>
+                <td class="text-end">{{ v.votes }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="d-flex justify-content-between small text-muted">
+          <div>Total PV: <span class="fw-semibold">{{ pv.total_votes }}</span></div>
+          <div>Inscrits: <span class="fw-semibold">{{ station.registered }}</span></div>
+        </div>
+
+        {% if station.registered and pv.total_votes > station.registered %}
+          <div class="alert alert-danger mt-3 mb-0">
+            Incohérence: total des voix supérieur aux inscrits. Corriger côté représentant / admin avant validation.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="mb-2">
+          {% if pv.status == "SUPERVISOR_VALIDATED" %}
+            <span class="badge text-bg-success">VALIDÉ</span>
+          {% elif pv.status == "SUPERVISOR_REJECTED" %}
+            <span class="badge text-bg-danger">REJETÉ</span>
+          {% elif pv.status == "SUBMITTED" %}
+            <span class="badge text-bg-warning">EN ATTENTE</span>
+          {% else %}
+            <span class="badge text-bg-secondary">{{ pv.status }}</span>
+          {% endif %}
+        </div>
+
+        <div class="small text-muted mb-3">
+          Soumis par <span class="fw-semibold">{{ pv.submitted_by }}</span><br/>
+          Le {{ pv.submitted_at_utc }}
+        </div>
+
+        {% if pv.supervisor_comment %}
+          <div class="alert alert-info small">
+            Dernière note: {{ pv.supervisor_comment }}
+          </div>
+        {% endif %}
+
+        <form method="post" action="{{ url_for('supervisor_validate_pv', code=station.code) }}" class="mb-2">
+          <label class="form-label">Commentaire (optionnel)</label>
+          <textarea class="form-control" name="comment" rows="2" placeholder="Ex: PV conforme."></textarea>
+          <button class="btn btn-success w-100 mt-2"
+                  {% if pv.status == "SUPERVISOR_VALIDATED" or (station.registered and pv.total_votes > station.registered) %}disabled{% endif %}>
+            Valider
+          </button>
+        </form>
+
+        <form method="post" action="{{ url_for('supervisor_reject_pv', code=station.code) }}">
+          <label class="form-label">Motif de rejet (obligatoire)</label>
+          <textarea class="form-control" name="comment" rows="3" placeholder="Ex: chiffres illisibles / total incohérent." required></textarea>
+          <button class="btn btn-danger w-100 mt-2" {% if pv.status == "SUPERVISOR_VALIDATED" %}disabled{% endif %}>Rejeter</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

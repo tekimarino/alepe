@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% set title = "Objectifs" %}
+{% block content %}
+  <h1>Objectifs par zone</h1>
+  <p class="muted">Définis un objectif de recensement par zone. Le tableau de bord calculera la progression.</p>
+
+  <div class="card">
+    <form class="form" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <div class="table-wrap">
+        <table class="table table-modern">
+          <thead>
+            <tr>
+              <th>Zone</th>
+              <th>Total (hors brouillons)</th>
+              <th>Objectif</th>
+              <th>Progression</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in rows %}
+              <tr>
+                <td><strong>{{ r.zone.name }}</strong></td>
+                <td>{{ r.total }}</td>
+                <td style="width:180px;">
+                  <input type="number" min="0" name="target_{{ r.zone.id }}" value="{{ r.target }}" style="width:140px;">
+                </td>
+                <td>
+                  {% if r.target and r.target > 0 %}
+                    <span class="badge">{{ r.pct }}%</span>
+                  {% else %}
+                    <span class="muted">—</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="actions" style="margin-top:12px;">
+        <button class="btn primary" type="submit">Enregistrer</button>
+        <a class="btn" href="{{ url_for('admin_dashboard') }}">Retour</a>
+      </div>
+
+      <div class="hint">Note : un objectif à 0 signifie « pas d’objectif défini ».</div>
+    </form>
+  </div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Affectations (CSV)</h3>
+
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Importer un CSV</h5>
+        <form method="post" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label class="form-label">Fichier CSV</label>
+            <input class="form-control" type="file" name="csv_file" accept=".csv" required>
+          </div>
+          <button class="btn btn-dark">Importer</button>
+        </form>
+        <hr>
+        <div class="small text-muted">
+          Colonnes requises: <code>username</code>, <code>polling_station_code</code>
+        </div>
+        <pre class="bg-light p-2 rounded small mb-0">username,polling_station_code
+rep1,BONOUA-001-BV01
+rep2,BONOUA-001-BV02</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="alert alert-info">
+      But: affecter chaque représentant à un bureau, pour qu’il ne puisse saisir que <strong>son</strong> bureau.
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Bureaux de vote – Bonoua</h3>
+
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Importer (CSV)</h5>
+        <form method="post" enctype="multipart/form-data">
+          <input type="hidden" name="mode" value="import">
+          <div class="mb-3">
+            <label class="form-label">Fichier bureaux (CSV)</label>
+            <input class="form-control" type="file" name="csv_file" accept=".csv" required>
+            <div class="form-text">Colonnes attendues: polling_station_code, centre_code, centre_name, bureau_code, bureau_num, registered</div>
+          </div>
+          <button class="btn btn-dark">Importer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="alert alert-secondary mb-0">
+      Les bureaux sont rattachés à un centre (lieu de vote) et ont un nombre d’inscrits.
+    </div>
+  </div>
+</div>
+
+<div class="card mt-3">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <h5 class="card-title mb-0">Liste des bureaux</h5>
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('admin_polling_stations_export_csv') }}">Exporter CSV</a>
+        <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('admin_polling_stations_export_pdf') }}">Exporter PDF</a>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-sm align-middle">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Centre</th>
+            <th>Bureau</th>
+            <th class="text-end">Inscrits</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in stations %}
+          <tr>
+            <td><code>{{ s.code }}</code></td>
+            <td class="text-muted">{{ s.centre_code }} – {{ s.centre_name }}</td>
+            <td>{{ s.bureau_code }}</td>
+            <td class="text-end">{{ "{:,}".format(s.registered or 0).replace(",", " ") }}</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin_polling_station_edit', ps_code=s.code) }}">Modifier</a>
+              <form class="d-inline" method="post" action="{{ url_for('admin_polling_station_delete', ps_code=s.code) }}" onsubmit="return confirm('Supprimer ce bureau ? Cela supprimera aussi son affectation et son PV.');">
+                <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+          {% if stations|length == 0 %}
+            <tr><td colspan="5" class="text-muted">Aucun bureau.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

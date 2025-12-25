@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+  <div>
+    <h3 class="mb-1">Candidats</h3>
+    <div class="text-muted small">
+      Élection consultée :
+      <span class="badge text-bg-light border">
+        {% for e in elections %}
+          {% if e.id == view_election_id %}
+            {{ e.type }} {{ e.year }} (Tour {{ e.round }}) – {{ e.commune }}
+          {% endif %}
+        {% endfor %}
+      </span>
+      {% if view_election_id == active_election_id %}
+        <span class="badge text-bg-success ms-1">ACTIVE</span>
+      {% else %}
+        <span class="badge text-bg-secondary ms-1">ARCHIVÉE (lecture seule)</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <form method="get" class="d-flex gap-2 align-items-center">
+    <label class="form-label mb-0 small text-muted">Changer d’élection</label>
+    <select class="form-select form-select-sm" name="election_id" onchange="this.form.submit()">
+      {% for e in elections %}
+        <option value="{{ e.id }}" {% if e.id == view_election_id %}selected{% endif %}>
+          {{ e.type }} {{ e.year }} (T{{ e.round }}) – {{ e.commune }} {% if e.id == active_election_id %}★{% endif %}
+        </option>
+      {% endfor %}
+    </select>
+    <noscript><button class="btn btn-sm btn-dark">OK</button></noscript>
+  </form>
+</div>
+
+{% if not can_edit %}
+  <div class="alert alert-warning">
+    Cette élection n’est pas l’élection active. Les candidats sont consultables, mais non modifiables.
+  </div>
+{% endif %}
+
+<div class="row g-3">
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Ajouter un candidat</h5>
+        <form method="post" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label class="form-label">Nom et prénoms</label>
+            <input class="form-control" name="name" required {% if not can_edit %}disabled{% endif %}>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Nom du parti</label>
+            <input class="form-control" name="party" {% if not can_edit %}disabled{% endif %}>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Photo (option)</label>
+            <input class="form-control" type="file" name="photo" accept="image/*" {% if not can_edit %}disabled{% endif %}>
+          </div>
+          <button class="btn btn-dark" {% if not can_edit %}disabled{% endif %}>Ajouter</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Liste</h5>
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Candidat</th>
+                <th>Parti</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in candidates %}
+              <tr>
+                <td><code>{{ c.id }}</code></td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    {% if c.photo %}<img class="avatar" src="{{ c.photo }}" alt="">{% else %}<div class="avatar placeholder"></div>{% endif %}
+                    <span class="fw-semibold">{{ c.name }}</span>
+                  </div>
+                </td>
+                <td class="text-muted">{{ c.party }}</td>
+                <td class="text-end">
+                  {% if can_edit %}
+                    <a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin_candidate_edit', cid=c.id) }}">Modifier</a>
+                    <form class="d-inline" method="post" action="{{ url_for('admin_candidate_delete', cid=c.id) }}" onsubmit="return confirm('Supprimer ce candidat ? Cela retirera aussi ses voix des PV.');">
+                      <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+                    </form>
+                  {% else %}
+                    <button class="btn btn-sm btn-outline-secondary" disabled>Modifier</button>
+                    <button class="btn btn-sm btn-outline-secondary" disabled>Supprimer</button>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+              {% if candidates|length == 0 %}
+                <tr><td colspan="4" class="text-muted">Aucun candidat.</td></tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

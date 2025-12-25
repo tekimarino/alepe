@@ -1,0 +1,11 @@
+{
+  "mode": "dry_run",
+  "sender_id": "Elections2028",
+  "http_json": {
+    "url": "",
+    "token": "",
+    "to_field": "to",
+    "message_field": "message",
+    "sender_field": "sender"
+  }
+}

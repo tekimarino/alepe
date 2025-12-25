@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Admin – Tableau de bord</h3>
+<div class="text-muted mb-3">
+  {{ election.name }} • Commune : {{ election.commune }} • Année {{ election.year }} • Tour {{ election.round }}
+</div>
+
+<div class="row g-3">
+  <div class="col-md-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted">Bureaux total</div>
+        <div class="display-6">{{ stats.bureaux_total }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted">PV reçus (tous statuts)</div>
+        <div class="display-6">{{ stats.pv_received }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted">En attente (superviseur)</div>
+        <div class="display-6">{{ stats.pv_pending }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted">Validés (superviseur)</div>
+        <div class="display-6">{{ stats.pv_validated }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mt-1">
+  <div class="col-md-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted">Rejetés (superviseur)</div>
+        <div class="display-6">{{ stats.pv_rejected }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted">% bureaux validés (public)</div>
+        <div class="display-6">{{ stats.percent_validated }}%</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="alert alert-info h-100 mb-0">
+      <div class="fw-semibold">Règle</div>
+      <div>
+        Les résultats publics et le classement ci-dessous sont calculés uniquement à partir des PV <strong>validés par superviseur</strong>.
+      </div>
+      <hr class="my-2">
+      <div class="fw-semibold">Taux de participation (live)</div>
+      {% if turnout and turnout.bureaux %}
+        <div><strong>{{ turnout.percent }}%</strong> — {{ turnout.voters }} votants / {{ turnout.registered }} inscrits ({{ turnout.bureaux }} BV validés)</div>
+      {% else %}
+        <div><strong>—</strong> (0 BV validé)</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-body">
+    <h5 class="card-title mb-3">Classement (global)</h5>
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>Candidat</th>
+            <th class="text-end">Votes</th>
+            <th class="text-end">%</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in summary.candidate_totals %}
+          <tr>
+            <td>
+              <div class="fw-semibold">{{ c.name }}</div>
+              <div class="text-muted small">{{ c.party }}</div>
+            </td>
+            <td class="text-end">{{ c.votes }}</td>
+            <td class="text-end">{{ c.percent }}%</td>
+          </tr>
+          {% endfor %}
+          {% if summary.candidate_totals|length == 0 %}
+            <tr><td colspan="3" class="text-muted">Aucun candidat.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-wrap gap-2 mt-3">
+  <a class="btn btn-outline-dark" href="{{ url_for('admin_candidates') }}">Gérer candidats</a>
+  <a class="btn btn-outline-dark" href="{{ url_for('admin_polling_stations') }}">Gérer bureaux</a>
+  <a class="btn btn-outline-dark" href="{{ url_for('admin_users') }}">Gérer représentants</a>
+  <a class="btn btn-outline-dark" href="{{ url_for('admin_results') }}">Voir PV saisis</a>
+  <a class="btn btn-primary" href="{{ url_for('public_results') }}">Résultats publics</a>
+</div>
+{% endblock %}

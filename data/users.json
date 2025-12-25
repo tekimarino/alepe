@@ -1,0 +1,35 @@
+[
+  {
+    "id": "1a3ff22d-d11a-4b2d-bbff-09d6a4576d76",
+    "username": "admin",
+    "full_name": "Administrateur",
+    "role": "admin",
+    "zone_id": null,
+    "supervisor_id": null,
+    "password_hash": "scrypt:32768:8:1$0H6bi0xcNZjT3Oxz$50c5c208672c63041e166855769705b51e9f46f911088c140aba54c3c79df8ff00c4949fae9ef3732c7be9125d9639bcdf5a0eedbffb633004ec75ef21069c45",
+    "created_at": "2025-12-25T15:07:43.578415+00:00",
+    "is_active": true
+  },
+  {
+    "id": "c32127ce-8941-45ef-90e1-0a4034df3976",
+    "username": "sup_adiaho",
+    "full_name": "Superviseur Adiaho",
+    "role": "supervisor",
+    "zone_id": "98e109a5-6695-4070-8577-cdc482dda642",
+    "supervisor_id": null,
+    "password_hash": "scrypt:32768:8:1$Y7pksI6PfkCTUmjr$bd06eaf49ae15365e329f6b68601688cb842e2cff40036ca084d6c502b50e922f0b9c4f6fc19b205e15f17abe777801106be3d839c3ae124677b4ed1be5c0a93",
+    "created_at": "2025-12-25T15:07:43.704715+00:00",
+    "is_active": true
+  },
+  {
+    "id": "06eee369-6168-437a-b1b2-857981b84f1a",
+    "username": "agent_01",
+    "full_name": "Agent Recenseur 01",
+    "role": "agent",
+    "zone_id": "98e109a5-6695-4070-8577-cdc482dda642",
+    "supervisor_id": "c32127ce-8941-45ef-90e1-0a4034df3976",
+    "password_hash": "scrypt:32768:8:1$acgUsAfhPxpHLlhZ$c25bc81b93f9b77863e84267f70d7ba4f90b677e364586cb2e6545c999537b4127c882d55e90d09c0517de16b7be18dba776143ffd609fada1736b4315bc6a47",
+    "created_at": "2025-12-25T15:07:43.830106+00:00",
+    "is_active": true
+  }
+]

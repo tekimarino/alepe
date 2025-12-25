@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Représentants / Utilisateurs</h3>
+
+<div class="row g-3">
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Ajouter un utilisateur</h5>
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">Rôle</label>
+            <select class="form-select" name="role" id="roleSelect">
+              <option value="rep" selected>Représentant (saisie)</option>
+              <option value="supervisor">Superviseur (centre)</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Nom complet (option)</label>
+            <input class="form-control" name="full_name">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Contacts (option)</label>
+            <input class="form-control" name="contacts">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Nom d’utilisateur</label>
+            <input class="form-control" name="username" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mot de passe</label>
+            <input class="form-control" name="password" type="password" required>
+          </div>
+          <div class="mb-3" id="repFields">
+            <label class="form-label">Bureau affecté (représentant)</label>
+            <select class="form-select" name="polling_station_code" id="pollingStationSelect">
+              <option value="">—</option>
+              {% for s in stations %}
+                <option value="{{ s.code }}">{{ s.code }} — {{ s.name }}</option>
+              {% endfor %}
+            </select>
+            <div class="form-text">Requis pour un représentant. (Vous pouvez aussi affecter en masse via le CSV.)</div>
+          </div>
+
+          <div class="mb-3 d-none" id="supFields">
+            <label class="form-label">Centre affecté (superviseur)</label>
+            <select class="form-select" name="center_code" id="centerSelect">
+              <option value="">—</option>
+              {% for c in centers %}
+                <option value="{{ c.code }}">{{ c.code }} — {{ c.name }}</option>
+              {% endfor %}
+            </select>
+            <div class="form-text">Requis pour un superviseur (1 superviseur unique par centre).</div>
+          </div>
+          <button class="btn btn-dark">Ajouter</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+          <h5 class="card-title mb-0">Liste</h5>
+          <div class="d-flex flex-wrap align-items-center gap-2">
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('admin_users_export_csv', election_id=view_election_id, q=q) }}">Exporter CSV</a>
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('admin_users_export_pdf', election_id=view_election_id, q=q) }}">Exporter PDF</a>
+            <form class="d-flex" method="get" action="{{ url_for('admin_users', election_id=view_election_id) }}">
+            <input class="form-control form-control-sm me-2" type="search" name="q" placeholder="Rechercher (username, nom, centre, bureau…)" value="{{ q or '' }}" style="min-width: 260px;">
+            <button class="btn btn-sm btn-outline-dark" type="submit">Rechercher</button>
+            {% if q %}
+              <a class="btn btn-sm btn-outline-secondary ms-2" href="{{ url_for('admin_users', election_id=view_election_id) }}">Réinitialiser</a>
+            {% endif %}
+            </form>
+          </div>
+        </div>
+        <div class="small text-muted mt-1">
+          {{ total }} résultat{{ '' if total == 1 else 's' }} • page {{ page }} / {{ pages }} • 20 par page
+        </div>
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Rôle</th>
+                <th>Affectation</th>
+                <th>Actif</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for u in users %}
+              <tr>
+                <td class="fw-semibold">{{ u.username }}</td>
+                <td><span class="badge text-bg-secondary">{{ u.role }}</span></td>
+                <td class="text-muted">
+                  {% if u.role == "rep" %}
+                    {% set st = station_map.get(u.polling_station_code) %}
+                    <div>
+                      Bureau:
+                      {% if st %}
+                        {{ (u.polling_station_code or "") }} — {{ st.get('name') }}
+                      {% else %}
+                        {{ u.polling_station_code or "—" }}
+                      {% endif %}
+                    </div>
+                    {% if st %}
+                      {% set c = center_map.get(st.get('centre_code')) %}
+                      <div class="small text-muted">Centre: {{ (c.get('code') ~ " — " ~ c.get('name')) if c else (st.get('centre_code') or "—") }}</div>
+                    {% endif %}
+                  {% elif u.role == "supervisor" %}
+                    {% set c = center_map.get(u.center_code) %}
+                    <div>Centre: {{ (c.get('code') ~ " — " ~ c.get('name')) if c else (u.center_code or "—") }}</div>
+                  {% else %}
+                    —
+                  {% endif %}
+                </td>
+                <td>{{ "Oui" if u.is_active else "Non" }}</td>
+                <td class="text-end">
+                  <a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin_user_edit', username=u.username) }}">Modifier</a>
+                  {% if u.role == 'rep' and u.polling_station_code %}
+                    <form class="d-inline" method="post" action="{{ url_for('admin_user_unassign', username=u.username, next=request.full_path) }}" onsubmit="return confirm('Désaffecter ce représentant de son bureau ?');">
+                      <button class="btn btn-sm btn-outline-warning">Désaffecter</button>
+                    </form>
+                  {% elif u.role == 'supervisor' and u.center_code %}
+                    <form class="d-inline" method="post" action="{{ url_for('admin_user_unassign', username=u.username, next=request.full_path) }}" onsubmit="return confirm('Désaffecter ce superviseur de son centre ?');">
+                      <button class="btn btn-sm btn-outline-warning">Désaffecter</button>
+                    </form>
+                  {% endif %}
+                  {% if u.role != 'admin' %}
+                    <form class="d-inline" method="post" action="{{ url_for('admin_user_delete', username=u.username) }}" onsubmit="return confirm('Supprimer cet utilisateur ?');">
+                      <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+                    </form>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+              {% if users|length == 0 %}
+                <tr><td colspan="5" class="text-muted">Aucun utilisateur.</td></tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+
+        {% if pages > 1 %}
+        <nav aria-label="Pagination" class="d-flex justify-content-end">
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item {{ 'disabled' if page <= 1 else '' }}">
+              <a class="page-link" href="{{ url_for('admin_users', election_id=view_election_id, page=page-1, q=q) }}">Précédent</a>
+            </li>
+
+            {% for p in page_links %}
+              {% if p is none %}
+                <li class="page-item disabled"><span class="page-link">…</span></li>
+              {% else %}
+                <li class="page-item {{ 'active' if p == page else '' }}">
+                  <a class="page-link" href="{{ url_for('admin_users', election_id=view_election_id, page=p, q=q) }}">{{ p }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
+
+            <li class="page-item {{ 'disabled' if page >= pages else '' }}">
+              <a class="page-link" href="{{ url_for('admin_users', election_id=view_election_id, page=page+1, q=q) }}">Suivant</a>
+            </li>
+          </ul>
+        </nav>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function(){
+    const roleSelect = document.getElementById('roleSelect');
+    const repFields = document.getElementById('repFields');
+    const supFields = document.getElementById('supFields');
+    const psSelect = document.getElementById('pollingStationSelect');
+    const cSelect = document.getElementById('centerSelect');
+
+    function toggle(){
+      const role = roleSelect ? roleSelect.value : 'rep';
+      if(role === 'supervisor'){
+        repFields && repFields.classList.add('d-none');
+        supFields && supFields.classList.remove('d-none');
+        if(psSelect) psSelect.value = '';
+      } else {
+        repFields && repFields.classList.remove('d-none');
+        supFields && supFields.classList.add('d-none');
+        if(cSelect) cSelect.value = '';
+      }
+      if(role === 'admin'){
+        // admin has no mandatory assignment
+        repFields && repFields.classList.add('d-none');
+        supFields && supFields.classList.add('d-none');
+        if(psSelect) psSelect.value='';
+        if(cSelect) cSelect.value='';
+      }
+    }
+
+    if(roleSelect){
+      roleSelect.addEventListener('change', toggle);
+      toggle();
+    }
+  })();
+</script>
+{% endblock %}

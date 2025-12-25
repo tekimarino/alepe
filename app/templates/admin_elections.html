@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+  <div>
+    <h2 class="mb-1">Élections</h2>
+    <div class="text-muted small">
+      Le système ne prend en compte que <strong>l’élection ACTIVE</strong> (représentants, superviseurs, PV, résultats publics).
+      Les autres élections restent consultables en lecture seule.
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Créer une élection</h5>
+        <form method="post">
+          <div class="row g-2">
+            <div class="col-md-6">
+              <label class="form-label">Type</label>
+              <select class="form-select" name="type" required>
+                <option value="MUNICIPALE">MUNICIPALE</option>
+                <option value="LEGISLATIVE">LEGISLATIVE</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Année</label>
+              <input class="form-control" name="year" type="number" min="1900" max="3000" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Tour</label>
+              <select class="form-select" name="round" required>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Commune</label>
+              <input class="form-control" name="commune" value="Bonoua" required>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Nom (affichage)</label>
+              <input class="form-control" name="name" placeholder="Ex: Municipales – Bonoua 2028">
+            </div>
+          </div>
+          <div class="mt-3 d-grid">
+            <button class="btn btn-dark">Créer</button>
+          </div>
+          <div class="text-muted small mt-2">
+            Astuce : une nouvelle élection est créée “inactive”. Il faut ensuite l’<strong>activer</strong>.
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Historique</h5>
+
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Élection</th>
+                <th>Statut</th>
+                <th>Créée (UTC)</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for e in elections %}
+              <tr>
+                <td><code>{{ e.id }}</code></td>
+                <td>
+                  <div class="fw-semibold">{{ e.type }} {{ e.year }} (Tour {{ e.round }})</div>
+                  <div class="text-muted small">{{ e.commune }} — {{ e.name }}</div>
+                </td>
+                <td>
+                  {% if e.id == active_election_id and (e.status|upper) == 'ACTIVE' %}
+                    <span class="badge text-bg-success">ACTIVE</span>
+                  {% else %}
+                    <span class="badge text-bg-secondary">ARCHIVÉE</span>
+                  {% endif %}
+                </td>
+                <td class="text-muted small">{{ e.created_at_utc or "—" }}</td>
+                <td class="text-end">
+                  {% if e.id == active_election_id and (e.status|upper) == 'ACTIVE' %}
+                    <form class="d-inline" method="post" action="{{ url_for('admin_election_deactivate', eid=e.id) }}" onsubmit="return confirm('Désactiver (archiver) cette élection ? Aucune élection ne sera active tant que vous n’en activez pas une autre.');">
+                      <button class="btn btn-sm btn-outline-warning">Désactiver</button>
+                    </form>
+                  {% else %}
+                    <form class="d-inline" method="post" action="{{ url_for('admin_election_activate', eid=e.id) }}" onsubmit="return confirm('Activer cette élection ? L’élection active actuelle sera archivée.');">
+                      <button class="btn btn-sm btn-outline-success">Activer</button>
+                    </form>
+                  {% endif %}
+                  <a class="btn btn-sm btn-outline-dark" href="{{ url_for('admin_results', election_id=e.id) }}">PV</a>
+                  <a class="btn btn-sm btn-outline-dark" href="{{ url_for('admin_users', election_id=e.id) }}">Représentants</a>
+                  <a class="btn btn-sm btn-outline-dark" href="{{ url_for('admin_candidates', election_id=e.id) }}">Candidats</a>
+                </td>
+              </tr>
+              {% endfor %}
+              {% if elections|length == 0 %}
+                <tr><td colspan="5" class="text-muted">Aucune élection configurée.</td></tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="alert alert-info mb-0">
+          <div class="fw-semibold">Règle de gouvernance</div>
+          <div class="small">
+            Un représentant/superviseur rattaché à une élection <strong>non active</strong> ne peut pas se connecter.
+            Les résultats publics sont calculés uniquement sur l’élection active, et uniquement sur les PV validés par superviseur.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

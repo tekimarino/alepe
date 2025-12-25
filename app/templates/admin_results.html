@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+  <div>
+    <h2 class="mb-1">PV saisis</h2>
+    <div class="text-muted small">
+      Les résultats publics ne comptent que les PV <strong>validés par superviseur</strong>.
+      <span class="ms-2 badge text-bg-light border">
+        {% for e in elections %}
+          {% if e.id == view_election_id %}
+            {{ e.type }} {{ e.year }} (Tour {{ e.round }}) – {{ e.commune }}
+          {% endif %}
+        {% endfor %}
+      </span>
+      {% if view_election_id == active_election_id %}
+        <span class="badge text-bg-success ms-1">ACTIVE</span>
+      {% else %}
+        <span class="badge text-bg-secondary ms-1">ARCHIVÉE (lecture seule)</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <form method="get" class="d-flex gap-2 align-items-center">
+    <label class="form-label mb-0 small text-muted">Changer d’élection</label>
+    <select class="form-select form-select-sm" name="election_id" onchange="this.form.submit()">
+      {% for e in elections %}
+        <option value="{{ e.id }}" {% if e.id == view_election_id %}selected{% endif %}>
+          {{ e.type }} {{ e.year }} (T{{ e.round }}) – {{ e.commune }} {% if e.id == active_election_id %}★{% endif %}
+        </option>
+      {% endfor %}
+    </select>
+    <noscript><button class="btn btn-sm btn-dark">OK</button></noscript>
+  </form>
+</div>
+
+{% if not can_edit %}
+  <div class="alert alert-warning">
+    Cette élection n’est pas l’élection active. Les PV sont consultables, mais non modifiables/supprimables.
+  </div>
+{% endif %}
+
+<form class="row g-2 align-items-end mb-3" method="get">
+  <input type="hidden" name="election_id" value="{{ view_election_id }}">
+  <div class="col-md-6">
+    <label class="form-label">Centre de vote</label>
+    <select class="form-select" name="centre">
+      <option value="" {% if not centre_filter %}selected{% endif %}>Tous les centres</option>
+      {% for c in centers %}
+        <option value="{{ c.code }}" {% if centre_filter == c.code %}selected{% endif %}>{{ c.code }} - {{ c.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Statut</label>
+    <select class="form-select" name="status">
+      <option value="" {% if not status_filter %}selected{% endif %}>Tous</option>
+      <option value="SUBMITTED" {% if status_filter == "SUBMITTED" %}selected{% endif %}>EN ATTENTE</option>
+      <option value="SUPERVISOR_VALIDATED" {% if status_filter == "SUPERVISOR_VALIDATED" %}selected{% endif %}>VALIDÉ</option>
+      <option value="SUPERVISOR_REJECTED" {% if status_filter == "SUPERVISOR_REJECTED" %}selected{% endif %}>REJETÉ</option>
+      <option value="ADMIN_REVIEWED" {% if status_filter == "ADMIN_REVIEWED" %}selected{% endif %}>REVU (admin)</option>
+    </select>
+  </div>
+  <div class="col-md-2 d-grid">
+    <button class="btn btn-dark">Filtrer</button>
+  </div>
+
+  <div class="col-12">
+    {% set base = url_for('admin_results') ~ '?election_id=' ~ view_election_id %}
+    {% if centre_filter %}
+      {% set centre_q = '&centre=' ~ centre_filter %}
+    {% else %}
+      {% set centre_q = '' %}
+    {% endif %}
+
+    <div class="d-flex flex-wrap gap-2">
+      <span class="badge text-bg-secondary">Bureaux (périmètre) : {{ stations_total_in_scope }}</span>
+      <a class="badge text-bg-dark text-decoration-none" href="{{ base }}{{ centre_q }}">PV enregistrés : {{ counts.total }}</a>
+      <a class="badge text-bg-warning text-decoration-none" href="{{ base }}{{ centre_q }}&status=SUBMITTED">EN ATTENTE : {{ counts.pending }}</a>
+      <a class="badge text-bg-success text-decoration-none" href="{{ base }}{{ centre_q }}&status=SUPERVISOR_VALIDATED">VALIDÉS : {{ counts.validated }}</a>
+      <a class="badge text-bg-danger text-decoration-none" href="{{ base }}{{ centre_q }}&status=SUPERVISOR_REJECTED">REJETÉS : {{ counts.rejected }}</a>
+      {% if counts.other and counts.other > 0 %}
+        <span class="badge text-bg-info">AUTRES : {{ counts.other }}</span>
+      {% endif %}
+      <a class="badge text-bg-light text-decoration-none border" href="{{ url_for('admin_results', election_id=view_election_id) }}">Réinitialiser</a>
+    </div>
+  </div>
+</form>
+
+<div class="table-responsive">
+  <table class="table table-sm table-hover align-middle">
+    <thead>
+      <tr>
+        <th>Bureau</th>
+        <th>Centre</th>
+        <th>Nom</th>
+        <th class="text-end">Total voix</th>
+        <th>Statut</th>
+        <th>Soumis par</th>
+        <th>Soumis le (UTC)</th>
+        <th>Décision superviseur</th>
+        <th class="text-end">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for it in items %}
+      <tr>
+        <td class="fw-semibold">{{ it.code }}</td>
+        <td class="text-muted small">
+          {% if it.centre_code %}
+            <span class="badge text-bg-light border">{{ it.centre_code }}</span>
+            <span class="ms-1">{{ it.centre_name }}</span>
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td class="text-muted">{{ it.station.name if it.station else "—" }}</td>
+        <td class="text-end">{{ it.total_votes }}</td>
+        <td>
+          {% if it.status == "SUPERVISOR_VALIDATED" %}
+            <span class="badge text-bg-success">VALIDÉ</span>
+          {% elif it.status == "SUPERVISOR_REJECTED" %}
+            <span class="badge text-bg-danger">REJETÉ</span>
+          {% elif it.status == "SUBMITTED" %}
+            <span class="badge text-bg-warning">EN ATTENTE</span>
+          {% elif it.status == "ADMIN_REVIEWED" %}
+            <span class="badge text-bg-info">REVU (admin)</span>
+          {% else %}
+            <span class="badge text-bg-secondary">{{ it.status or "—" }}</span>
+          {% endif %}
+        </td>
+        <td class="text-muted">{{ it.submitted_by or "—" }}</td>
+        <td class="text-muted small">{{ it.submitted_at_utc or "—" }}</td>
+        <td class="text-muted small">
+          {% if it.supervisor_decided_by %}
+            <div>{{ it.supervisor_decided_by }} — {{ it.supervisor_decided_at_utc }}</div>
+            {% if it.supervisor_comment %}
+              <div class="text-muted">Note: {{ it.supervisor_comment }}</div>
+            {% endif %}
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td class="text-end">
+          {% if can_edit %}
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin_result_edit', code=it.code) }}">Modifier</a>
+            <form class="d-inline" method="post" action="{{ url_for('admin_result_delete', code=it.code) }}" onsubmit="return confirm('Supprimer ce PV ?');">
+              <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+            </form>
+          {% else %}
+            <button class="btn btn-sm btn-outline-secondary" disabled>Modifier</button>
+            <button class="btn btn-sm btn-outline-secondary" disabled>Supprimer</button>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+      {% if items|length == 0 %}
+        <tr><td colspan="9" class="text-muted">Aucun PV pour ce filtre.</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

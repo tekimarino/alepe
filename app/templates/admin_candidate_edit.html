@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0">Modifier un candidat</h3>
+  <a class="btn btn-outline-secondary" href="{{ url_for('admin_candidates') }}">Retour</a>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <form method="post" enctype="multipart/form-data">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label">ID</label>
+          <input class="form-control" value="{{ cand.id }}" readonly>
+        </div>
+        <div class="col-md-9"></div>
+
+        <div class="col-md-6">
+          <label class="form-label">Nom et prénoms</label>
+          <input class="form-control" name="name" value="{{ cand.name }}" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Parti</label>
+          <input class="form-control" name="party" value="{{ cand.party }}">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Photo (option)</label>
+          <input class="form-control" type="file" name="photo" accept="image/*">
+          <div class="form-text">Laisser vide pour conserver la photo actuelle.</div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Aperçu</label>
+          <div class="d-flex align-items-center gap-2">
+            {% if cand.photo %}
+              <img class="avatar" src="{{ cand.photo }}" alt="">
+              <span class="text-muted small">Photo actuelle</span>
+            {% else %}
+              <div class="avatar placeholder"></div>
+              <span class="text-muted small">Aucune photo</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <button class="btn btn-dark">Enregistrer</button>
+        <a class="btn btn-outline-secondary" href="{{ url_for('admin_candidates') }}">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

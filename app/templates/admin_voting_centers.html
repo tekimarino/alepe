@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Centres de vote (lieux) – Bonoua</h3>
+
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Importer (CSV)</h5>
+        <form method="post" enctype="multipart/form-data">
+          <input type="hidden" name="mode" value="import">
+          <div class="mb-3">
+            <label class="form-label">Fichier centres (CSV)</label>
+            <input class="form-control" type="file" name="csv_file" accept=".csv" required>
+            <div class="form-text">Colonnes attendues: commune, centre_code, centre_name, nb_bureaux, registered_total</div>
+          </div>
+          <button class="btn btn-dark">Importer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="alert alert-info mb-0">
+      Astuce: les centres correspondent aux « lieux de vote » (ex: <em>001 - ECOLE METHODISTE</em>), et contiennent plusieurs bureaux.
+    </div>
+  </div>
+</div>
+
+<div class="card mt-3">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <h5 class="card-title mb-0">Liste des centres</h5>
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('admin_voting_centers_export_csv') }}">Exporter CSV</a>
+        <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('admin_voting_centers_export_pdf') }}">Exporter PDF</a>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-sm align-middle">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Centre</th>
+            <th class="text-end">Bureaux</th>
+            <th class="text-end">Inscrits</th>
+            <th>PV (statuts)</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in centers %}
+          <tr>
+            <td>
+              <a class="text-decoration-none" href="{{ url_for('admin_results') }}?centre={{ c.code }}">
+                <code>{{ c.code }}</code>
+              </a>
+            </td>
+            <td>{{ c.name }}</td>
+            <td class="text-end">{{ c.nb_bureaux }}</td>
+            <td class="text-end">{{ "{:,}".format(c.registered_total).replace(",", " ") }}</td>
+            <td class="small">
+              <a class="badge text-bg-success text-decoration-none" href="{{ url_for('admin_results') }}?centre={{ c.code }}&status=SUPERVISOR_VALIDATED">V: {{ c.pv_validated or 0 }}</a>
+              <a class="badge text-bg-warning text-decoration-none" href="{{ url_for('admin_results') }}?centre={{ c.code }}&status=SUBMITTED">A: {{ c.pv_pending or 0 }}</a>
+              <a class="badge text-bg-danger text-decoration-none" href="{{ url_for('admin_results') }}?centre={{ c.code }}&status=SUPERVISOR_REJECTED">R: {{ c.pv_rejected or 0 }}</a>
+              {% if c.pv_missing and c.pv_missing > 0 %}
+                <span class="badge text-bg-secondary">N: {{ c.pv_missing }}</span>
+              {% endif %}
+              {% if c.pv_other and c.pv_other > 0 %}
+                <span class="badge text-bg-info">Autres: {{ c.pv_other }}</span>
+              {% endif %}
+            </td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin_voting_center_edit', centre_code=c.code) }}">Modifier</a>
+              <form class="d-inline" method="post" action="{{ url_for('admin_voting_center_delete', centre_code=c.code) }}" onsubmit="return confirm('Supprimer ce centre ? Cela supprimera aussi ses bureaux, affectations et PV associés.');">
+                <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+          {% if centers|length == 0 %}
+            <tr><td colspan="6" class="text-muted">Aucun centre.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+    <div class="text-muted small mt-2">
+      Légende badges : <span class="badge text-bg-success">V</span> validés, <span class="badge text-bg-warning">A</span> en attente, <span class="badge text-bg-danger">R</span> rejetés, <span class="badge text-bg-secondary">N</span> non soumis.
+    </div>
+  </div>
+</div>
+{% endblock %}

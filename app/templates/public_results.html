@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
+  <div>
+    <h2 class="mb-0">Résultats – {{ election.name }}</h2>
+    <div class="text-muted">Commune : {{ election.commune }} • Année : {{ election.year }} • Tour : {{ election.round }}</div>
+    <div class="small mt-1"><span class="badge text-bg-success">En direct</span> <span class="text-muted">Dernière mise à jour :</span> <span id="lastUpdate">—</span></div>
+  </div>
+  <div class="text-end">
+    <div class="small text-muted">Objectif : saisie bureau par bureau</div>
+  </div>
+</div>
+
+<hr>
+
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted">Bureaux de vote restants</div>
+        <div class="display-6" id="remaining">—</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted">% des bureaux validés</div>
+        <div class="display-6" id="percentDep">—</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted">Total votes enregistrés</div>
+        <div class="display-6" id="totalVotes">—</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-body">
+    <h5 class="card-title mb-3">Classement</h5>
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>Candidat</th>
+            <th class="text-end">% des votes</th>
+            <th class="text-end">Nb de votes</th>
+          </tr>
+        </thead>
+        <tbody id="rows">
+          <tr><td colspan="3" class="text-muted">Chargement…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function nf(x){ return new Intl.NumberFormat('fr-FR').format(x); }
+
+async function refresh(){
+  const r = await fetch("{{ url_for('api_results_summary') }}", {cache:"no-store"});
+  const d = await r.json();
+
+  document.getElementById("remaining").textContent = nf(d.bureaux_remaining);
+  document.getElementById("percentDep").textContent = d.percent_depouilles + " %";
+  document.getElementById("totalVotes").textContent = nf(d.total_votes);
+
+  document.getElementById("lastUpdate").textContent = d.last_update_utc || "—";
+
+  const rows = document.getElementById("rows");
+  rows.innerHTML = "";
+  if(!d.candidate_totals || d.candidate_totals.length === 0){
+    rows.innerHTML = '<tr><td colspan="3" class="text-muted">Aucun candidat.</td></tr>';
+    return;
+  }
+
+  for(const c of d.candidate_totals){
+    const tr = document.createElement("tr");
+
+    const td1 = document.createElement("td");
+    td1.innerHTML = `
+      <div class="d-flex align-items-center gap-2">
+        ${c.photo ? `<img class="avatar" src="${c.photo}" alt="">` : `<div class="avatar placeholder"></div>`}
+        <div>
+          <div class="fw-semibold">${c.name}</div>
+          <div class="text-muted small">${c.party || ""}</div>
+        </div>
+      </div>
+    `;
+    const td2 = document.createElement("td");
+    td2.className = "text-end";
+    td2.textContent = (c.percent ?? 0) + " %";
+
+    const td3 = document.createElement("td");
+    td3.className = "text-end";
+    td3.textContent = nf(c.votes ?? 0);
+
+    tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3);
+    rows.appendChild(tr);
+  }
+}
+
+refresh();
+setInterval(refresh, 3000);
+</script>
+{% endblock %}

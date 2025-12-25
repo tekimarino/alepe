@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex flex-wrap align-items-end justify-content-between gap-2 mb-3">
+  <div>
+    <h3 class="mb-1">Admin – Simulation (verrouillage)</h3>
+    <div class="text-muted">
+      {{ data.election_label }}
+      {% if data.last_update_utc %} • Dernière mise à jour : {{ data.last_update_utc }}{% endif %}
+    </div>
+  </div>
+
+  <form class="d-flex gap-2 align-items-end" method="post" action="{{ url_for('admin_simulation') }}">
+    <div>
+      <label class="form-label mb-1 small text-muted">Taux de participation (%)</label>
+      <input name="turnout_rate" class="form-control form-control-sm" style="width:110px"
+             value="{{ (data.turnout_rate*100) | round(0) }}" inputmode="decimal">
+    </div>
+    <button class="btn btn-sm btn-primary" type="submit">Appliquer</button>
+  </form>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-8">
+    <div class="card sim-hero">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+          <div class="badge rounded-pill text-bg-secondary" id="simRule">
+            Règle : {{ data.rule }} ({{ (data.turnout_rate*100) | round(0) }}%)
+          </div>
+          {% if data.locked %}
+            <div class="badge rounded-pill text-bg-success sim-badge" id="simBadge">VERROUILLÉ</div>
+          {% else %}
+            <div class="badge rounded-pill text-bg-warning sim-badge" id="simBadge">EN COURS</div>
+          {% endif %}
+        </div>
+
+        {% if data.leader %}
+          <div class="sim-winner mt-3">
+            <div class="sim-photo-wrap">
+              <img id="simPhoto" src="{{ data.leader.photo or url_for('static', filename='img/logo.png') }}" class="sim-photo" alt="Photo">
+            </div>
+
+            <div class="flex-grow-1">
+              <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                <div>
+                  <div class="sim-title">Candidat en tête</div>
+                  <div class="sim-name" id="simName">{{ data.leader.name }}</div>
+                  <div class="text-muted small" id="simParty">{{ data.leader.party }}</div>
+                </div>
+
+                <div class="text-end">
+                  <div class="sim-title">Voix (validées)</div>
+                  <div class="sim-votes" id="simVotes">{{ "{:,}".format(data.leader_votes).replace(",", " ") }}</div>
+                  <div class="text-muted small" id="simPercent">{{ (data.leader.percent) | round(2) }}%</div>
+                </div>
+              </div>
+
+              <hr class="my-3">
+
+              <div class="row g-2">
+                <div class="col-md-4">
+                  <div class="sim-kpi">
+                    <div class="sim-kpi-label">Bureaux</div>
+                    <div class="sim-kpi-value">
+                      <span id="simBureauxValides">{{ data.bureaux_valides }}</span> /
+                      <span id="simBureauxTotal">{{ data.bureaux_total }}</span>
+                    </div>
+                    <div class="text-muted small">Restants : <span id="simBureauxRestants">{{ data.bureaux_restants }}</span></div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="sim-kpi">
+                    <div class="sim-kpi-label">Inscrits restants</div>
+                    <div class="sim-kpi-value" id="simInscrits">{{ "{:,}".format(data.inscrits_restants).replace(",", " ") }}</div>
+                    <div class="text-muted small">Max votes restants ({{ (data.turnout_rate*100) | round(0) }}%) :
+                      <span id="simVotesRestants">{{ "{:,}".format(data.votes_restants_max).replace(",", " ") }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="sim-kpi">
+                    <div class="sim-kpi-label">Avance actuelle</div>
+                    <div class="sim-kpi-value">
+                      <span id="simMargin">{{ "{:,}".format(data.margin).replace(",", " ") }}</span>
+                    </div>
+                    <div class="text-muted small">
+                      Avance requise : <span id="simMarginReq">{{ "{:,}".format(data.margin_required).replace(",", " ") }}</span>
+                      {% if not data.locked %}
+                        • Manque : <strong id="simNeed">{{ "{:,}".format(data.votes_needed_to_lock).replace(",", " ") }}</strong>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-3">
+                <div class="d-flex justify-content-between small text-muted mb-1">
+                  <span>Progression vers verrouillage</span>
+                  <span id="simProgressText">{{ data.progress }}%</span>
+                </div>
+                <div class="progress" style="height: 12px;">
+                  <div class="progress-bar" id="simProgressBar" role="progressbar" style="width: {{ data.progress }}%;"></div>
+                </div>
+              </div>
+
+              {% if data.locked %}
+                <div class="alert alert-success mt-3 mb-0">
+                  <div class="fw-bold">VAINQUEUR (projection {{ (data.turnout_rate*100) | round(0) }}%)</div>
+                  <div class="small">Même si les bureaux restants votent au maximum estimé, personne ne peut rattraper.</div>
+                </div>
+              {% else %}
+                <div class="alert alert-warning mt-3 mb-0">
+                  <div class="fw-bold">Pas encore verrouillé</div>
+                  <div class="small">Il faut encore <strong id="simNeed2">{{ "{:,}".format(data.votes_needed_to_lock).replace(",", " ") }}</strong> voix d’avance (projection {{ (data.turnout_rate*100) | round(0) }}%).</div>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% else %}
+          <div class="alert alert-info mt-3 mb-0">
+            Aucun PV validé pour l’instant. La simulation s’activera dès qu’un superviseur valide des PV.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Classement (PV validés)</h5>
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Candidat</th>
+                <th class="text-end">Voix</th>
+                <th class="text-end">%</th>
+              </tr>
+            </thead>
+            <tbody id="rank-body">
+              {% for c in data.ranking %}
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <img class="avatar" src="{{ c.photo or url_for('static', filename='img/logo.png') }}" alt="">
+                    <div>
+                      <div class="fw-semibold">{{ c.name }}</div>
+                      <div class="text-muted small">{{ c.party }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-end">{{ "{:,}".format(c.votes).replace(",", " ") }}</td>
+                <td class="text-end">{{ c.percent }}%</td>
+              </tr>
+              {% endfor %}
+              {% if data.ranking|length == 0 %}
+                <tr><td colspan="3" class="text-muted">Aucun résultat validé pour l’instant.</td></tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="small text-muted mt-2">
+          ⚠️ Ce verrouillage est une <strong>projection</strong> basée sur {{ (data.turnout_rate*100) | round(0) }}% de participation sur les bureaux restants.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function formatInt(n){
+  try{
+    return new Intl.NumberFormat('fr-FR').format(Number(n || 0));
+  }catch(e){
+    return String(n||0);
+  }
+}
+
+function setBadge(locked){
+  const badge = document.getElementById("simBadge");
+  if(!badge) return;
+  badge.classList.remove("text-bg-success","text-bg-warning");
+  badge.textContent = locked ? "VERROUILLÉ" : "EN COURS";
+  badge.classList.add(locked ? "text-bg-success" : "text-bg-warning");
+}
+
+async function refreshSim(){
+  const r = await fetch("{{ url_for('admin_simulation_data') }}", {cache:"no-store"});
+  const d = await r.json();
+
+  // Update header bits
+  const rule = document.getElementById("simRule");
+  if(rule) rule.textContent = `Règle : ${d.rule} (${Math.round((d.turnout_rate||0.7)*100)}%)`;
+
+  setBadge(!!d.locked);
+
+  // Winner block
+  if(d.leader){
+    const photo = document.getElementById("simPhoto");
+    if(photo) photo.src = d.leader.photo || photo.src;
+
+    const name = document.getElementById("simName");
+    if(name) name.textContent = d.leader.name || "";
+
+    const party = document.getElementById("simParty");
+    if(party) party.textContent = d.leader.party || "";
+
+    const votes = document.getElementById("simVotes");
+    if(votes) votes.textContent = formatInt(d.leader_votes);
+
+    const pct = document.getElementById("simPercent");
+    if(pct) pct.textContent = (d.leader.percent ?? 0) + "%";
+
+    const bvTot = document.getElementById("simBureauxTotal");
+    if(bvTot) bvTot.textContent = d.bureaux_total;
+
+    const bvVal = document.getElementById("simBureauxValides");
+    if(bvVal) bvVal.textContent = d.bureaux_valides;
+
+    const bvRes = document.getElementById("simBureauxRestants");
+    if(bvRes) bvRes.textContent = d.bureaux_restants;
+
+    const ins = document.getElementById("simInscrits");
+    if(ins) ins.textContent = formatInt(d.inscrits_restants);
+
+    const vr = document.getElementById("simVotesRestants");
+    if(vr) vr.textContent = formatInt(d.votes_restants_max);
+
+    const m = document.getElementById("simMargin");
+    if(m) m.textContent = formatInt(d.margin);
+
+    const mr = document.getElementById("simMarginReq");
+    if(mr) mr.textContent = formatInt(d.margin_required);
+
+    const need = document.getElementById("simNeed");
+    if(need) need.textContent = formatInt(d.votes_needed_to_lock);
+
+    const need2 = document.getElementById("simNeed2");
+    if(need2) need2.textContent = formatInt(d.votes_needed_to_lock);
+
+    const ptxt = document.getElementById("simProgressText");
+    if(ptxt) ptxt.textContent = (d.progress ?? 0) + "%";
+
+    const pbar = document.getElementById("simProgressBar");
+    if(pbar) pbar.style.width = (d.progress ?? 0) + "%";
+  }
+
+  // Update ranking table (simple)
+  const body = document.getElementById("rank-body");
+  if(body){
+    body.innerHTML = "";
+    if(!d.ranking || d.ranking.length === 0){
+      body.innerHTML = `<tr><td colspan="3" class="text-muted">Aucun résultat validé pour l’instant.</td></tr>`;
+    }else{
+      for(const c of d.ranking){
+        body.innerHTML += `
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <img class="avatar" src="${c.photo || "{{ url_for('static', filename='img/logo.png') }}"}" alt="">
+                <div>
+                  <div class="fw-semibold">${c.name || ""}</div>
+                  <div class="text-muted small">${c.party || ""}</div>
+                </div>
+              </div>
+            </td>
+            <td class="text-end">${formatInt(c.votes)}</td>
+            <td class="text-end">${(c.percent ?? 0)}%</td>
+          </tr>`;
+      }
+    }
+  }
+}
+
+setInterval(refreshSim, 2000);
+</script>
+{% endblock %}
