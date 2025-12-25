@@ -1,0 +1,35 @@
+[
+  {
+    "username": "admin",
+    "password_hash": "scrypt:32768:8:1$y921DOdCcuB0Nfq6$3a0929d44ef8d72ae03506ec74139f5a5fdb490159f6387d6ed7eb13aacc6ef7454268ecb901e9ee2fc4c966427c0d87607cbfbf25671367988cc28fd0184fe9",
+    "role": "admin",
+    "full_name": "Administrateur",
+    "contacts": "",
+    "polling_station_code": null,
+    "is_active": true,
+    "center_code": null,
+    "election_id": null
+  },
+  {
+    "username": "sup001",
+    "password_hash": "scrypt:32768:8:1$51SRLMFW7WKK7QCU$93e1c917350f4a0207cba9ac1fef2bcf1104d6184c08470bc34a66014a5c6e3302784d8e4bafdccb8fb91f4931179a1d98e4c74dd87d815520ee50c57d088688",
+    "role": "supervisor",
+    "full_name": "Superviseur Centre 001",
+    "contacts": "",
+    "polling_station_code": null,
+    "center_code": "001",
+    "election_id": 1,
+    "is_active": true
+  },
+  {
+    "username": "rep1",
+    "password_hash": "scrypt:32768:8:1$Cof8PWQAdOT9fBff$b913e0893ba1f3ba7ae1e76b1a2b01be4e61af5adeb54adbe0e5bb70ecedb801f5934f070f8e3139f01c3254bf01a03d8a573789380637c4940e1b407d8dc170",
+    "role": "rep",
+    "full_name": "Représentant 1",
+    "contacts": "",
+    "polling_station_code": "ALEPE-001-BV01",
+    "center_code": null,
+    "is_active": true,
+    "election_id": 1
+  }
+]
