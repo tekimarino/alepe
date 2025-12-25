@@ -13,11 +13,11 @@ venv/
 Thumbs.db
 
 # Uploads (si tu veux éviter d'envoyer les fichiers)
-app/uploads/
+!app/uploads/
 
 # Data (choisis une option)
 # Option 1 (recommandée) : ne pas versionner les données réelles
-app/data/*.json
+!app/data/*.json
 
 # Option 2 : si tu veux versionner une base vide (décommente et crée un app/data/README.txt)
 # !app/data/README.txt

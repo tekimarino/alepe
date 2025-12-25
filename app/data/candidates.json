@@ -1,0 +1,40 @@
+{
+  "1": [
+    {
+      "id": "C001",
+      "name": "OSSIN YAPI SIMPLICE",
+      "party": "Indépendant – Lièvres d'Iléf",
+      "photo": "/static/uploads/ossin_yapi_simplice.jpg"
+    },
+    {
+      "id": "C002",
+      "name": "AGUIE ABOA LAURENTINE",
+      "party": "A.D.C.I",
+      "photo": "/static/uploads/aguie_aboa_laurentine.jpg"
+    },
+    {
+      "id": "C003",
+      "name": "N'CHO N'CHO CHRISTOPHE",
+      "party": "RHDP",
+      "photo": "/static/uploads/ncho_ncho_christophe.jpg"
+    },
+    {
+      "id": "C004",
+      "name": "ABOA HERMANN",
+      "party": "Indépendant – Pour que la voix d'Alépé compte",
+      "photo": "/static/uploads/aboa_hermann.jpg"
+    },
+    {
+      "id": "C005",
+      "name": "YAPO MARTIAL AUGUSTE",
+      "party": "Indépendant",
+      "photo": "/static/uploads/yapo_martial_auguste.jpg"
+    },
+    {
+      "id": "C006",
+      "name": "DIALLO IBRAHIMA SORY",
+      "party": "PDCI-RDA",
+      "photo": "/static/uploads/diallo_ibrahima_sory.jpg"
+    }
+  ]
+}

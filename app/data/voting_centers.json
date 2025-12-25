@@ -1,0 +1,569 @@
+[
+  {
+    "code": "001",
+    "name": "GROUPE SCOLAIRE ALEPE 1-2",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 10,
+    "registered_total": 4441,
+    "municipal": true
+  },
+  {
+    "code": "002",
+    "name": "LYCEE MODERNE ALEPE",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 6,
+    "registered_total": 2684,
+    "municipal": true
+  },
+  {
+    "code": "003",
+    "name": "EPP ABROTCHI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 2,
+    "registered_total": 813,
+    "municipal": true
+  },
+  {
+    "code": "004",
+    "name": "EPP INGRAKON",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 4,
+    "registered_total": 1726,
+    "municipal": true
+  },
+  {
+    "code": "005",
+    "name": "EPP MONGA",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 7,
+    "registered_total": 2859,
+    "municipal": true
+  },
+  {
+    "code": "006",
+    "name": "GROUPE SCOLAIRE 1-2-3-5 MATERNELLE DES PAPILLONS DE MONTEZO",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 7,
+    "registered_total": 3131,
+    "municipal": true
+  },
+  {
+    "code": "007",
+    "name": "EPP 3 MONTEZO",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 6,
+    "registered_total": 2406,
+    "municipal": true
+  },
+  {
+    "code": "008",
+    "name": "EPP NIANDA",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 2,
+    "registered_total": 543,
+    "municipal": true
+  },
+  {
+    "code": "009",
+    "name": "LYCEE YAPO AHOUCHI DIT PERGO DE MONTEZO",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 264,
+    "municipal": true
+  },
+  {
+    "code": "010",
+    "name": "FOYER DES JEUNES D'ALEPE",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 298,
+    "municipal": true
+  },
+  {
+    "code": "011",
+    "name": "EPP CHATEAU",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 178,
+    "municipal": true
+  },
+  {
+    "code": "012",
+    "name": "EPP 1 AHOUTOUE",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 5,
+    "registered_total": 1810,
+    "municipal": true
+  },
+  {
+    "code": "013",
+    "name": "EPP 1 GRAND ALEPE",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 3,
+    "registered_total": 1237,
+    "municipal": true
+  },
+  {
+    "code": "014",
+    "name": "EPP 2 GRAND ALEPE",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 3,
+    "registered_total": 1292,
+    "municipal": true
+  },
+  {
+    "code": "015",
+    "name": "EPP 1 M'BOHOIN",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 2,
+    "registered_total": 803,
+    "municipal": true
+  },
+  {
+    "code": "016",
+    "name": "EPC FILLES MEMNI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 5,
+    "registered_total": 1938,
+    "municipal": true
+  },
+  {
+    "code": "017",
+    "name": "EPP CATHOLIQUE GARCONS MEMNI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 3,
+    "registered_total": 1080,
+    "municipal": true
+  },
+  {
+    "code": "018",
+    "name": "EPP 1-2-3 MEMNI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 4,
+    "registered_total": 1580,
+    "municipal": true
+  },
+  {
+    "code": "019",
+    "name": "EPP MONNINKOI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 188,
+    "municipal": true
+  },
+  {
+    "code": "020",
+    "name": "EPP YAKASSE-COMOE",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 2,
+    "registered_total": 538,
+    "municipal": true
+  },
+  {
+    "code": "021",
+    "name": "EPP 1 AKOURE",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 3,
+    "registered_total": 1343,
+    "municipal": true
+  },
+  {
+    "code": "022",
+    "name": "EPP 1 ANDOU-M'BATTO",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 3,
+    "registered_total": 925,
+    "municipal": true
+  },
+  {
+    "code": "023",
+    "name": "EPV DABRE",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 3,
+    "registered_total": 1003,
+    "municipal": true
+  },
+  {
+    "code": "024",
+    "name": "GROUPE SCOLAIRE DOMOLON 1-2",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 3,
+    "registered_total": 1348,
+    "municipal": true
+  },
+  {
+    "code": "025",
+    "name": "EPP 1 MOTOBE",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 2,
+    "registered_total": 662,
+    "municipal": true
+  },
+  {
+    "code": "026",
+    "name": "EPP N'GOKRO",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 2,
+    "registered_total": 531,
+    "municipal": true
+  },
+  {
+    "code": "027",
+    "name": "EPP OGUEDOUME",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 2,
+    "registered_total": 505,
+    "municipal": true
+  },
+  {
+    "code": "028",
+    "name": "EPP NOUGOUSSI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 203,
+    "municipal": true
+  },
+  {
+    "code": "029",
+    "name": "GROUPE SCOLAIRE ABOISSO-COMOE",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 4,
+    "registered_total": 1692,
+    "municipal": true
+  },
+  {
+    "code": "030",
+    "name": "EPP GALEKRO",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 194,
+    "municipal": true
+  },
+  {
+    "code": "031",
+    "name": "EPP ADJEKRO",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 47,
+    "municipal": true
+  },
+  {
+    "code": "032",
+    "name": "EPP KOUASSI KOUADIOKRO",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 131,
+    "municipal": true
+  },
+  {
+    "code": "033",
+    "name": "EPP N'ZEREKOU",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 2,
+    "registered_total": 567,
+    "municipal": true
+  },
+  {
+    "code": "034",
+    "name": "EPP DIOULABOUGOU",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 90,
+    "municipal": true
+  },
+  {
+    "code": "035",
+    "name": "EPP AHOULOU CHANTIER",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 90,
+    "municipal": true
+  },
+  {
+    "code": "036",
+    "name": "GROUPE SCOLAIRE AKA CHANTIER",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 223,
+    "municipal": true
+  },
+  {
+    "code": "037",
+    "name": "GROUPE SCOLAIRE 2 ABOISSO-COMOE",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 181,
+    "municipal": true
+  },
+  {
+    "code": "038",
+    "name": "EPP ALOSSO 1",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 195,
+    "municipal": true
+  },
+  {
+    "code": "039",
+    "name": "GROUPE SCOLAIRE ALLOSSO 2",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 3,
+    "registered_total": 971,
+    "municipal": true
+  },
+  {
+    "code": "040",
+    "name": "EPP EGNAMBO CARREFOUR",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 231,
+    "municipal": true
+  },
+  {
+    "code": "041",
+    "name": "EPP KOUTOUKRO 1",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 174,
+    "municipal": true
+  },
+  {
+    "code": "042",
+    "name": "EPP ANOKRO",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 340,
+    "municipal": true
+  },
+  {
+    "code": "043",
+    "name": "EPP KOUTOUKRO 2",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 296,
+    "municipal": true
+  },
+  {
+    "code": "044",
+    "name": "EPP KOIKRO",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 90,
+    "municipal": true
+  },
+  {
+    "code": "045",
+    "name": "EPP 1 DANGUIRA",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 5,
+    "registered_total": 1843,
+    "municipal": true
+  },
+  {
+    "code": "046",
+    "name": "EPP DANGUIRA CHATEAU",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 5,
+    "registered_total": 2068,
+    "municipal": true
+  },
+  {
+    "code": "047",
+    "name": "PLACE PUBLIQUE AHOAKOI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 87,
+    "municipal": true
+  },
+  {
+    "code": "048",
+    "name": "EPP KODIOUSSOU",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 5,
+    "registered_total": 2185,
+    "municipal": true
+  },
+  {
+    "code": "049",
+    "name": "GROUPE SCOLAIRE KOSSANDJI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 5,
+    "registered_total": 2017,
+    "municipal": true
+  },
+  {
+    "code": "050",
+    "name": "EPP MOPODJI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 2,
+    "registered_total": 462,
+    "municipal": true
+  },
+  {
+    "code": "051",
+    "name": "GROUPE SCOLAIRE DZEUDJI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 5,
+    "registered_total": 1868,
+    "municipal": true
+  },
+  {
+    "code": "052",
+    "name": "EPP N'SANKOI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 284,
+    "municipal": true
+  },
+  {
+    "code": "053",
+    "name": "EPP MAFIA",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 221,
+    "municipal": true
+  },
+  {
+    "code": "054",
+    "name": "EPP YAPOKOI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 446,
+    "municipal": true
+  },
+  {
+    "code": "055",
+    "name": "PLACE PUBLIQUE TEBIKOI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 141,
+    "municipal": true
+  },
+  {
+    "code": "056",
+    "name": "MAGASIN GVC ANGOKOI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 74,
+    "municipal": true
+  },
+  {
+    "code": "057",
+    "name": "EPP DAGUIKOI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 70,
+    "municipal": true
+  },
+  {
+    "code": "058",
+    "name": "EPP ANGOBEKOI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 125,
+    "municipal": true
+  },
+  {
+    "code": "059",
+    "name": "MAGASIN GVC MOBIOKOI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 61,
+    "municipal": true
+  },
+  {
+    "code": "060",
+    "name": "EPP QUATRE KOSSANDJI",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 163,
+    "municipal": true
+  },
+  {
+    "code": "061",
+    "name": "EPP PATRICK ACHI DE DANGUIRA",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 167,
+    "municipal": true
+  },
+  {
+    "code": "062",
+    "name": "EPP MARCEL GOUSSIO",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 202,
+    "municipal": true
+  },
+  {
+    "code": "063",
+    "name": "COLLEGE MODERNE DE DANDUIRA",
+    "commune": "ALEPE",
+    "segment": "COMMUNE",
+    "nb_bureaux": 1,
+    "registered_total": 102,
+    "municipal": true
+  }
+]
